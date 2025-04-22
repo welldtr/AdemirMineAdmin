@@ -24,6 +24,7 @@ namespace ademir.mineadmin
 
         public async Task MainAsync()
         {
+            DotEnv.Load();
             var wl = new List<string> { };
             ulong guildId = ulong.Parse(guildIdStr!);
             ulong logChannelId = ulong.Parse(channelIdStr!);
