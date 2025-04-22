@@ -11,4 +11,4 @@ WORKDIR /App
 COPY --from=build-env /App/out .
 ENV TZ=America/Sao_Paulo
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-ENTRYPOINT ["dotnet", "DiscordBot.dll"]
+ENTRYPOINT ["dotnet", "ademir.mineadmin.dll"]
