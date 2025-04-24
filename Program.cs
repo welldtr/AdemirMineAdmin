@@ -6,13 +6,15 @@ using System.Net.WebSockets;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Text;
+using System;
+using MongoDB.Driver.Core.Events;
 
 namespace ademir.mineadmin
 {
     internal class Program
     {
         private string? mongoServer { get => Environment.GetEnvironmentVariable("MongoServer"); }
-        private string? ademirAuth { get => Environment.GetEnvironmentVariable("ChatGPTKey"); }
+        private string? ademirAuth { get => Environment.GetEnvironmentVariable("AdemirAuth"); }
         private string? guildIdStr { get => Environment.GetEnvironmentVariable("GuildId"); }
         private string? channelIdStr { get => Environment.GetEnvironmentVariable("ChannelId"); }
         private string? adminIdStr { get => Environment.GetEnvironmentVariable("AdminId"); }
@@ -46,7 +48,7 @@ namespace ademir.mineadmin
             DiscordSocketClient _client = new DiscordSocketClient(config);
             await _client.LoginAsync(TokenType.Bot, dicordbottoken);
             await _client.StartAsync();
-
+            
             var mongo = new MongoClient(mongodbstring);
             var db = mongo.GetDatabase("mineadm");
             var whitelist = db.GetCollection<WhiteListEntry>("whitelist");
@@ -98,6 +100,18 @@ namespace ademir.mineadmin
                 }
             };
 
+            bool ready = false;
+            _client.Ready += async () => {
+                ready = true;
+            };
+            do
+            {
+                await Task.Delay(1000);
+                Console.WriteLine("Esperando server.");
+            }
+            while (!ready);
+
+            var guild = _client.GetGuild(guildId);
             var lastTimeLog = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             CancellationTokenSource source = new CancellationTokenSource();
             while (true)
@@ -147,7 +161,7 @@ namespace ademir.mineadmin
                                             {
                                                 Console.WriteLine($"[{ts.ToLocalTime()}] {message}");
 
-                                                var channel = _client.GetGuild(guildId).GetTextChannel(logChannelId);
+                                                var channel = guild.GetTextChannel(logChannelId);
 
                                                 var re = Regex.Match(message!, @"^(\S+) (left|joined|was|has|fell|starved|suffocated|died|drowned|walked|tried|hit|blew|burned|went|discovered|experienced|froze|withered)");
 
