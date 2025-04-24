@@ -28,7 +28,7 @@ namespace ademir.mineadmin
             var wl = new List<string> { };
             ulong guildId = ulong.Parse(guildIdStr!);
             ulong logChannelId = ulong.Parse(channelIdStr!);
-            var adminIds = new ulong[] { ulong.Parse(adminIdStr!) };
+            var adminIds = adminIdStr!.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(a => ulong.Parse(a.Trim()));
             var servertaphost = serverTapHost;
             var server_tap_key = serverTapKey;
             var mongodbstring = mongoServer;
