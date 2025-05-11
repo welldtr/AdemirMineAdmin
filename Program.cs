@@ -183,6 +183,8 @@ namespace ademir.mineadmin
                                                         var adv = re.Groups[2].Value;
 
                                                         if (adv == "joined")
+                                                        {
+                                                            await Task.Delay(5000);
                                                             if (!wl.Contains(uname, StringComparer.InvariantCultureIgnoreCase))
                                                             {
                                                                 await runCommand($"gamemode spectator {fullname}");
@@ -191,6 +193,7 @@ namespace ademir.mineadmin
                                                             {
                                                                 await runCommand($"gamemode survival {fullname}");
                                                             }
+                                                        }
 
                                                         var uidreq = await http.GetFromJsonAsync<JsonElement>($"https://api.geysermc.org/v2/utils/uuid/bedrock_or_java/{fullname}?prefix=.");
                                                         var uid = uidreq.GetProperty("id").GetString();
