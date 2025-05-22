@@ -175,6 +175,9 @@ namespace ademir.mineadmin
                                                     if (re.Success)
                                                     {
                                                         var fullname = re.Groups[1].Value;
+                                                        if (fullname.StartsWith("\u001b[93m"))
+                                                            fullname = fullname[5..];
+
                                                         var uname = fullname;
 
                                                         if (uname.StartsWith('.'))
