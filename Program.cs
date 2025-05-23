@@ -58,7 +58,6 @@ namespace ademir.mineadmin
                 wl = await whitelist
                 .Find(a => a.MinecraftUserName != "").Project(a => a.MinecraftUserName).ToListAsync();
             };
-            await loadWhiteList();
             Func<string, Task> runCommand = async (command) =>
             {
                 using (var h = new HttpClient())
@@ -73,7 +72,6 @@ namespace ademir.mineadmin
             };
 
             await runCommand("whitelist off");
-
             await loadWhiteList();
             var reCmd = new Regex(@"^wl (\S+)$");
             _client.MessageReceived += async (msg) =>
@@ -124,6 +122,7 @@ namespace ademir.mineadmin
                     try
                     {
                         await ws.ConnectAsync(consolews, CancellationToken.None);
+                        await runCommand("whitelist off");
                         byte[] buffer = new byte[1024];
 
                         while (ws.State == WebSocketState.Open)
